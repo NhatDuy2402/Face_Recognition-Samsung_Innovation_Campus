@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+
+{% block content %} 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #000000;
+    }
+    .container {
+        display: flex;
+        height: 100vh;
+    }
+    .left-panel {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+    .right-panel {
+        flex: .7;
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    #cam {
+    position: relative;
+    height:unset;
+    width: 100%;
+    aspect-ratio: 4/3;
+    }
+
+    #video, #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    #cameraSelect, #toggleAttendance {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .container-table{
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    @media screen and (max-width: 900px) {
+        .container {
+            display: block;
+        }
+        .container>div {
+            width: 100%;
+        }
+    }
+</style>
+
+<body>
+<div class="container">
+    <div class="left-panel">        
+        <div id="cam">
+            <video id="video" width="640" height="480" autoplay></video>
+            <canvas id="canvas" width="640" height="480"></canvas>            
+        </div>
+        <div class="control-box">
+            <select id="cameraSelect" title="Chọn camera" >
+            </select>
+            <button id="toggleAttendance">Bật Điểm Danh</button>
+        </div>
+        <div class="result">
+            <h2>Kết quả</h2>
+            <p id="result"></p>
+        </div>
+    </div>
+    <div class="right-panel">
+        <h2>Danh sách sinh viên</h2>
+        <div class="container-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>MSSV</th>
+                        <th>Họ tên</th>
+                        <th>Mã lớp</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody id="table">
+                    {% for student in students_checkin %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ student.student_id }}</td>
+                        <td>{{ student.svlname}} {{ student.svfname}}</td>
+                        <td>{{ student.class_id }}</td>
+                        <td>{{ student.date}} {{ student.time}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <form action="{{ url_for('diemdanh_diemdanh.delete') }}" method="post" style="display:inline;">
+            <button type="submit">Xóa tất cả</button>
+        </form>
+    </div>
+</div>
+<script src="{{ url_for('static',filename='js/diemdanh.js')}}"></script> 
+</body>
+{% endblock %}
+
+
+<!-- python src/export_frame.py
+python src/processing.py
+python src/classifier.py -->
